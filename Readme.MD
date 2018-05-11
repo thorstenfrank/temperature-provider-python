@@ -19,15 +19,22 @@ sudo pip3 install requests
 This script is meant to continuously read temperature readings and upload them - so you will need to get the
 [temperature-server](https://github.com/thorstenfrank/temperature-server) up and running as well.
 
+Although the script was written for (and runs on) Python3, it will run on Python2 as well. You will need to change the
+shebang.
+
 # Running
 
-Open the `temperature-provider.py` script and edit the properties as needed, namely
+The `temperature-provider.py` script runs with a single argument - the name of the measurement.
 
-* `measurement_name`: the label you want to give to the reading - the name or location of the sensor, or whatever you want it to be
-* `device_id`: the physical address of the sensor - check your Raspi's `/sys/bus/w1/devices/` directory, there will probably be a subdirectory starting with `28-` or similar there. If not, your sensor isn't set up properly
-* `server_url`: base URL (hostname and port) of the temperature server
-* `measurement_interval`: by default, the script checks for temperature changes every 60 seconds. Change this to your liking
+By default, it will look for a device folder `/sys/bus/w1/devices/<sensor-id>/w1_slave` where the `<sensor-id>` starts
+with `28*`. If you have multiple one-wire interfaces connected, you will need to supply the correct one as an argument
+using the `-n` option.
 
-Save the file and run it.
+The other defaults are
 
-The shell script `startclient.sh` can be used to start the script in the background and keep it running.
+* `server url`: http://localhost:8080. Can be changed using the `-u` option
+* `interval`: the interval between measurement readings, defaults to 60 seconds. Can be changed using the `-i` option.
+* `force post`: the script will only post a measurement to the server if it is different than the previous one. Posting can
+be enforced using the `-f` switch
+
+See the script for more obscure options, such as doing a dry-run without posting to the server.
